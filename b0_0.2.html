@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>平面文字生存小游戏</title>
+  <style>
+    body {
+      font-family: monospace;
+      background-color: #f3f3f3;
+    }
+    #game-container {
+      width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border: 1px solid #cccccc;
+    }
+    #game-board {
+      white-space: pre;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="debug">timer=0</div>
+  <div id="game-container">
+    <h1>平面文字生存小游戏</h1>
+    <p>使用键盘方向键控制角色移动，避开敌人。</p>
+    <pre id="game-board"></pre>
+  </div>
+
+  <script>
+    // 游戏数据
+    var gameData = {
+      width: 10,
+      height: 10,
+			blank: " ^",
+      playerX: 0,
+      playerY: 0,
+
+      enemy : function(x = 4, y = 5) {
+				return {
+        	text : "敌",
+        	X : x,
+        	Y : y
+      	}
+			},
+      enemies : []
+    };
+    // 计时器
+    function countdownTimer(duration, displayElement) {
+      let timer = duration;
+      let intervalId;
+
+      const startTimer = () => {
+        clearInterval(intervalId); // 清除之前的定时器
+        intervalId = setInterval(() => {
+          const minutes = Math.floor(timer / 60).toString().padStart(2, '0');
+          const seconds = (timer % 60).toString().padStart(2, '0');
+          //displayElement.textContent = minutes + ":" + seconds;
+          if (--timer <= 0) {
+            clearInterval(intervalId);
+            //displayElement.textContent = "Time's up!";
+            }
+        }, 1000);
+      };
+      const stopTimer = () => {
+        clearInterval(intervalId);
+      };
+      const getValue = () => {
+        return timer;
+      };
+      const restartTimer = () => {
+        timer = duration; // 重置计时器数值
+        startTimer(); // 开始计时
+      };
+
+      return {
+        start: startTimer,
+        stop: stopTimer,
+        restart: restartTimer,
+        getValue: getValue
+      };
+    }
+    const duration = 1; // 倒计时时长，单位为秒
+    const displayElement = document.getElementById("timer"); // 用于显示计时器的元素
+    const timer = countdownTimer(duration, displayElement);
+    timer.start();
+    // 创建敌人
+    gameData.enemies.push(gameData.enemy());
+
+    // 游戏界面
+    var gameBoard = document.getElementById('game-board');
+
+    // 更新游戏界面
+    function updateGameBoard() {
+      var board = '';
+      document.getElementById("debug").textContent = "timer:" + timer.getValue();
+      for (var y = 0; y < gameData.height; y++) {
+        for (var x = 0; x < gameData.width; x++) {
+          var isPlayer = x === gameData.playerX && y === gameData.playerY;
+          var isEnemy = false;
+					var enemyText = "敌";
+
+          for (var i = 0; i < gameData.enemies.length; i++) {
+            if (x === gameData.enemies[i].X && y === gameData.enemies[i].Y) {
+              isEnemy = true;
+							enemyText = gameData.enemies[i].text;
+            }
+            if (isPlayer) {
+              board += '你';
+            } else if (isEnemy) {
+              board += enemyText;
+            } else {
+              board += gameData.blank;
+            }
+          }
+        }
+        board += '\n';
+      }
+      var value = timer.getValue();
+      if (value === 0) {
+        for (var i = 0; i < gameData.enemies.length; i++) {
+          do {
+            var randomInt = Math.floor(Math.random() * 5);// 随机0~4
+            var X = gameData.enemies[i].X;
+            var Y = gameData.enemies[i].Y;
+            if (randomInt === 0 && !isPositionOccupied(X + 1, Y) && !isLeaveedge(X + 1, Y))
+              gameData.enemies[i].X += 1;
+            else if (randomInt === 1 && !isPositionOccupied(X - 1, Y) && !isLeaveedge(X - 1, Y))
+              gameData.enemies[i].X -= 1;
+            else if (randomInt === 2 && !isPositionOccupied(X, Y + 1) && !isLeaveedge(X, Y + 1))
+              gameData.enemies[i].Y += 1;
+            else if (randomInt === 3 && !isPositionOccupied(X, Y - 1) && !isLeaveedge(X, Y - 1))
+              gameData.enemies[i].Y -= 1;
+          }while (X === gameData.playerX || Y === gameData.playerY);
+        }
+        timer.restart();
+      }
+      gameBoard.textContent = board;
+    }
+
+    // 监听键盘事件
+    document.addEventListener('keydown', function(event) {
+      if (event.key === "ArrowLeft") { // 左箭头键
+        var newX = gameData.playerX - 1;
+        var newY = gameData.playerY;
+
+        if (!isPositionOccupied(newX, newY) && !isLeaveedge(newX, newY)) {
+          gameData.playerX = newX;
+        }
+      } else if (event.key === "ArrowUp") { // 上箭头键
+        var newX = gameData.playerX;
+        var newY = gameData.playerY - 1;
+
+        if (!isPositionOccupied(newX, newY) && !isLeaveedge(newX, newY)) {
+          gameData.playerY = newY;
+        }
+      } else if (event.key === "ArrowRight") { // 右箭头键
+        var newX = gameData.playerX + 1;
+        var newY = gameData.playerY;
+
+        if (!isPositionOccupied(newX, newY) && !isLeaveedge(newX, newY)) {
+          gameData.playerX = newX;
+        }
+      } else if (event.key === "ArrowDown") { // 下箭头键
+        var newX = gameData.playerX;
+        var newY = gameData.playerY + 1;
+
+        if (!isPositionOccupied(newX, newY) && !isLeaveedge(newX, newY)) {
+          gameData.playerY = newY;
+        }
+      }
+  
+      updateGameBoard();
+    });
+
+		// 判断是否南开边缘
+		function isLeaveedge(x = 0, y = 0) {
+			if (x >= gameData.width || x < 0 || y >= gameData.height || y < 0) return true;
+			else return false;
+		}
+
+    // 判断位置是否被占用
+    function isPositionOccupied(x, y) {
+      if (x === gameData.playerX && y === gameData.playerY) {
+        return true;
+      }
+
+      for (var i = 0; i < gameData.enemies.length; i++) {
+        if (x === gameData.enemies[i].X && y === gameData.enemies[i].Y) {
+          return true;
+        }
+      }
+
+  		return false;
+		}
+
+    // 初始化游戏界面
+    updateGameBoard();
+
+    // 每隔0.2秒渲染界面
+    setInterval(updateGameBoard, 200);
+
+  </script>
+</body>
+</html>
