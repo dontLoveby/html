@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>伪随机数生成器</title>
+    <script>
+        function generateRandomNumber(seed) {
+            var m = 99999999; // 伪随机数生成算法中的一个常数
+            var a = 1103515245; // 伪随机数生成算法中的一个常数
+            var c = 12345; // 伪随机数生成算法中的一个常数
+
+            var randomNum = (a * seed + c) % m;
+            return randomNum;
+        }
+
+        function generateRandomSequence() {
+            var seed = parseInt(document.getElementById("seed").value);
+            var sequenceLength = parseInt(document.getElementById("sequenceLength").value);
+
+            var sequence = [];
+            for (var i = 0; i < sequenceLength; i++) {
+                seed = generateRandomNumber(seed);
+                sequence.push(seed);
+            }
+
+            document.getElementById("randomSequence").textContent = sequence.join(", ");
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333333;
+        }
+        input[type="number"] {
+            padding: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>伪随机数生成器</h1>
+    <label for="seed">种子：</label>
+    <input type="number" id="seed" min="0" required>
+    <br><br>
+    <label for="sequenceLength">生成序列长度：</label>
+    <input type="number" id="sequenceLength" min="1" required>
+    <br><br>
+    <button onclick="generateRandomSequence()">生成序列</button>
+    <h2>伪随机数序列: <span id="randomSequence"></span></h2>
+</body>
+</html>
