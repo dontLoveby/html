@@ -19,7 +19,7 @@ var gameData = {
 			Y : y
 		}
 	},
-	anywall : function(x = 0, y = 0, wallstr = "墙") {
+	anyWall : function(x = 0, y = 0, wallstr = "墙") {
 		return {
 			text : wallstr,
 			X : x,
