@@ -1,5 +1,6 @@
-// File v0.2.2
+// File v0.2.3
 // revise 100
+// import countdownTimer from "./function1.js";
 // 游戏数据
 var gameData = {
 	window: {
@@ -12,9 +13,7 @@ var gameData = {
 		door: "门",
 		wall: "墙",
 		playerX: 3,
-		playerY: 3,
-		playerWorldX: 0,
-		playerWorldY: 0
+		playerY: 3
 	},
 	enemy : function(x = 4, y = 5) {
 		return {
@@ -34,6 +33,8 @@ var gameData = {
 	walls : [],
 	world : {/*区块*/
 		size : 10,// 已加载的区块数量
+		playerWorldX: 0,
+		playerWorldY: 0,
 		hash : {/* 区块哈希表 */},
 		load : function(x, y) {// 加载区块
 		    var a = gameData.world.hash[x + "," + y];
@@ -52,6 +53,21 @@ var gameData = {
 					}
 				}
 		    }
+		},
+		push : function(x, y, name) {
+			var a = gameData.world.hash[x + "," + y];
+			if (a === undefined) {
+				gameData.world.hash[x + "," + y] = a = gameData.world.size * gameData.world.size;
+				for (var i = - gameData.world.size / 2; i < gameData.world.size / 2; i++) {
+					for (var j = - gameData.world.size / 2; j < gameData.world.size / 2; j++) {
+						var b = gameData.world.hash[i + "," + j];
+						if (b === undefined) {
+							gameData.world.hash[i + "," + j] = b = gameData.world.size * gameData.world.size;
+							gameData.walls.push(gameData.anyWall(i, j, name));
+						}
+					}
+				}
+			}
 		}
 	}
 };

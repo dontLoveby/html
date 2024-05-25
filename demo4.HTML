@@ -1,43 +1,53 @@
 ﻿<!-- 0.5 -->
 <!DOCTYPE html>
 <html>
+<html lang="ch">
+
+</html>
+
 <head>
-    <title>文字生存小游戏</title>
-    <style>
-        #debug {
-            text-align: start;
-            border: 10px rgb(47, 56, 27);
-        }
-        #game-area {
-            width: 600px;
-            height: 450px;
-            border: 2px solid rgb(37, 76, 94);
-            margin: 0 auto;
-            padding: 10px;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        #player-info {
-            text-align: center;
-        }
-        #options {
-            display: flex;
-            justify-content: center;
-        }
-    </style>
-    <script src="function1.js"></script>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字生存小游戏</title>
+  <style>
+    #debug {
+      text-align: start;
+      border: 10px rgb(47, 56, 27);
+    }
+
+    #game-area {
+      width: 600px;
+      height: 450px;
+      border: 2px solid rgb(37, 76, 94);
+      margin: 0 auto;
+      padding: 10px;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    #player-info {
+      text-align: center;
+    }
+
+    #options {
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+  <script src="function1.js"></script>
 </head>
 
 <body>
-	<div id="debug">
-		<p id="timer1">timer=0</p>
-	</div>
+  <div id="debug">
+    <p id="timer1">timer=0</p>
+  </div>
   <div id="game-area">
-  	<div id="player-info">
-    	<p id="health">健康值: 100</p>
+    <div id="player-info">
+      <p id="health">健康值: 100</p>
       <p id="inventory">物品: 无</p>
       <p id="physical">体力值：1000/1000</p>
       <p id="hunger-levels">饥饿值：100</p>
@@ -48,13 +58,14 @@
       <!-- <button class="food" onclick="getButtonText(event)">退出</button> -->
       <p id="game-text">欢迎来到文字生存小游戏！</p>
     </div>
-      <div id="options">
-        <button id="choice1" onclick="getButtonText(event)">探索</button>
-        <button id="choice2" onclick="getButtonText(event)">休息</button>
-        <button id="choice3" onclick="getButtonText(event)">进食</button>
-      </div>
+    <div id="options">
+      <button id="choice1" onclick="getButtonText(event)">探索</button>
+      <button id="choice2" onclick="getButtonText(event)">休息</button>
+      <button id="choice3" onclick="getButtonText(event)">进食</button>
+    </div>
   </div>
 
-    <script src="demo4main.js"></script>
+  <script src="demo4main.js"></script>
 </body>
+
 </html>
