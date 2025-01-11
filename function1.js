@@ -1,14 +1,14 @@
 // 计时器
-function countdownTimer(duration = 3, displayElement) {
+function countdownTimer(duration = 3/*, displayElement*/) {
 	let timer = duration;
 	let intervalId;
-	let text = displayElement.textContent;
+	// let text = displayElement.textContent;
 	const startTimer = () => {
 		clearInterval(intervalId); // 清除之前的定时器
 		intervalId = setInterval(() => {
-			const minutes = Math.floor(timer / 60)//.toString().padStart(2, '0');//后面是格式化
-			const seconds = (timer % 60)//.toString().padStart(2, '0');
-			displayElement.textContent = text + "=" + (minutes * 60 + seconds);
+			// const minutes = Math.floor(timer / 60)//.toString().padStart(2, '0');//后面是格式化
+			// const seconds = (timer % 60)//.toString().padStart(2, '0');
+			// displayElement.textContent = "timer=" + (minutes * 60 + seconds);
 			if (--timer <= 0) {
 				clearInterval(intervalId);
 				//displayElement.textContent = "Time's up!";

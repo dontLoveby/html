@@ -5,18 +5,13 @@ let playerInventory = {
 	apple: 2,
 	banana: 0,
 	length: 2,
-	language: "Chinese",
-	texList: ["苹果", "香蕉"],
-	textListE: ["apple", "banana"],
-	text: function () {
-		var list = this.textListE;
+	textList: ["apple", "banana"],
+	CNtestList : {"apple" : "苹果", "banana" : "香蕉"},
+	getText : function () {
 		var text = "";
-		console.log(list);
-		for (var i = 0; i < length; i++) {
-			if (this[list[i]] > 0)
-				text += textlist[i];
+		for (var i = 0; i < this.textList; i++) {
+			text += this.CNtestList[this.textList[i]] + ",";
 		}
-		if (text === "") return "无";
 		return text;
 	}
 };
@@ -33,6 +28,7 @@ let value;
 let buttonText = "";
 let oldButtonText = "";
 let infoName = { choice1: "探索：", choice2: "休息：" };
+let gameTextList = [];
 const duration = 2; // 倒计时时长，单位为秒
 const displayElement = document.getElementById("timer"); // 用于显示计时器的元素
 const timer = countdownTimer(duration, displayElement);
@@ -47,6 +43,11 @@ function getButtonText(event) {
 	// 打印按钮文本
 	console.log(buttonText);
 }
+// 添加游戏文本
+function addGameText (text) {
+	gameTextList.join(text)
+}
+
 
 // 函数：处理选择1
 const handleChoice1 = () => {
@@ -62,25 +63,25 @@ const handleChoice1 = () => {
 		  gameState = "explore";
 		} else */
 		if (randomInt === 0) {
-			document.getElementById("game-text").innerHTML = "你找到了一些蜂蜜，恢复了体力、饥饿度！</p>";
+			addGameText("你找到了一些蜂蜜，恢复了体力、饥饿度！");
 			playerHunger += 15;
 			playerPhysical += 200;
 			//gameState = "start";
 		} else if (randomInt === 1) {
-			document.getElementById("game-text").innerHTML = "你找到了一棵苹果树！</p>";
+			addGameText("你找到了一棵苹果树！");
 			playerInventory.apple += Math.floor(Math.random() * (2 + 1)) + 1;
 			//gameState = "start";
 		} else if (randomInt === 2) {
-			document.getElementById("game-text").innerHTML = "你摘到到了一棵香蕉！</p>";
+			addGameText("你摘到到了一棵香蕉！");
 			playerInventory.banana++;
 		} else if (randomInt === 3) {
-			document.getElementById("game-text").innerHTML = "你摘到到了一个苹果！</p>";
+			addGameText("你摘到到了一个苹果！");
 			playerInventory.apple++;
 		} else if (randomInt <= 6) {
-			document.getElementById("game-text").innerHTML = "你被小草划伤！</p>";
+			addGameText("你被小草划伤！");
 			playerHealth -= 3;
 		} else {
-			document.getElementById("game-text").innerHTML = "你什么都没找到！</p>";
+			addGameText("你什么都没找到！");
 			//gameState = "start";
 		}
 		if (gameState === "explore") {
@@ -94,7 +95,7 @@ const handleChoice1 = () => {
 			}
 		}
 	} else {
-		document.getElementById("game-text").innerHTML = "体力或饥饿度不足!</p>"
+		addGameText("体力或饥饿度不足!");
 	}
 	updatePlayerInfo();
 };
@@ -103,7 +104,7 @@ const handleChoice1 = () => {
 const handleChoice2 = () => {
 	// 处理场景中选择2的结果
 	updateTimer();
-	document.getElementById("game-text").innerHTML = "你休息得很好，恢复了健康！</p>";
+	addGameText("你休息得很好，恢复了健康！");
 	playerHealth += playerHunger / 15 - 3;
 	playerHunger -= 10;
 	playerPhysical = upperlimitPhysical + playerHunger - 95;
@@ -124,7 +125,7 @@ const handleChoice3 = () => {
 				playerInventory.apple -= 1;
 				playerHunger += 14;
 				playerPhysical += 180;
-				document.getElementById("game-text").innerHTML = " 进食了一颗苹果，饥饿度+14，体力+180.</p>"
+				addGameText(" 进食了一颗苹果，饥饿度+14，体力+180.");
 			}
 			break;
 		}
@@ -133,7 +134,7 @@ const handleChoice3 = () => {
 				playerInventory.banana -= 1;
 				playerHunger += 22;
 				playerPhysical += 150;
-				document.getElementById("game-text").innerHTML = " 进食了一条香蕉，饥饿度+22，体力+150.</p>"
+				addGameText(" 进食了一条香蕉，饥饿度+22，体力+150.");
 			}
 			break;
 		}
@@ -144,30 +145,24 @@ const handleChoice3 = () => {
 	updatePlayerInfo();
 }
 
-const handleFood2 = () => {
+const haveFood = function (id = "banana") {
 	updatePlayerInfo();
-	if (playerInventory["banana"] >= 1) {
-		document.getElementById("game-text").innerHTML = " 选择了一条香蕉，按下“进食”进行食用</p>"
+	if (id in playerInventory)
+	if (playerInventory[id] >= 1) {
+		addGameText(" 选择了一条" + playerInventory.CNtestList[id] +"，按下“进食”进行食用");
 	} else {
-		document.getElementById("game-text").innerHTML = " 抱歉，您还没有香蕉</p>"
+		addGameText(" 抱歉，您还没有" + playerInventory.CNtestList[id]);
 	}
 }
-const handleFood1 = () => {
-	updatePlayerInfo();
-	if (playerInventory["apple"] >= 1) {
-		document.getElementById("game-text").innerHTML = " 选择了一条苹果，按下“进食”进行食用</p>"
-	} else {
-		document.getElementById("game-text").innerHTML = " 抱歉，您还没有苹果</p>"
-	}
-}
+
 // 函数：更新玩家信息
 const updatePlayerInfo = () => {
-	console.log(playerInventory.apple);
-	console.log(playerInventory.banana);
-	console.log(playerInventory.text());
+	// console.log("苹果:" + playerInventory.apple);
+	// console.log("香蕉:" + playerInventory.banana);
+	console.log(playerInventory.getText());
 	// console.log(playerInventory.list());
 	document.getElementById("health").textContent = "健康值: " + playerHealth;
-	document.getElementById("inventory").textContent = "物品: " + playerInventory.text();
+	document.getElementById("inventory").textContent = "物品: " + playerInventory.getText();
 	document.getElementById("physical").textContent = "体力值：" + playerPhysical + "/" + upperlimitPhysical;
 	document.getElementById("hunger-levels").textContent = "饥饿度：" + playerHunger;
 };
@@ -181,6 +176,9 @@ const updateGameInfo = () => {
 	// eventbuttonText = options.innerText;
 	value = timer.getValue(); // 获取计时器数值
 	document.getElementById("debug").innerHTML = "timer=" + value;
+	if (value === 0) {
+		delete gameTextList[0];
+	}
 	switch (value) {
 		case 0: {
 			b = document.getElementById("game-text").innerHTML.substring(0, b + 2);
@@ -206,6 +204,13 @@ const updateGameInfo = () => {
 	if (document.getElementById("game-text").innerHTML.substring(0, bl + 1) != "<p>") {
 		document.getElementById("game-text").innerHTML = "<p>" + document.getElementById("game-text").innerHTML;
 	}
+	// 更新游戏文本到屏幕
+	text = "";
+	console.log(gameTextList);
+	for (var i = 0; i < gameTextList.length; i++) {
+		text += "<p>" + gameTextList + "</p>";
+	}
+	// document.getElementById("game-text").innerHTML = text;
 }
 
 const updateTimer = () => {
@@ -226,5 +231,6 @@ const intervalId = setInterval(updateGameInfo, 100);
 document.getElementById("choice1").addEventListener("click", handleChoice1);
 document.getElementById("choice2").addEventListener("click", handleChoice2);
 document.getElementById("choice3").addEventListener("click", handleChoice3);
-document.getElementById("apple").addEventListener("click", handleFood1);
-document.getElementById("banana").addEventListener("click", handleFood2);
+document.getElementById("apple").addEventListener("click", haveFood);
+document.getElementById("banana").addEventListener("click", haveFood);
+setInterval(updateGameInfo, 1000)
